@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #000;
+  }
+}
+
+@layer base {
+
+  h1 {
+    @apply text-4xl font-semibold max-sm:text-2xl;
+  }
+
+  h2 {
+    @apply text-2xl font-semibold ;
+  }
+
+  h3 {
+    @apply text-xl font-semibold ;
+  }
+
+  button{
+    @apply cursor-pointer transition-all duration-300 ease-in-out ;
+  }
+
+  button:active{
+    @apply scale-120;
+  }
+
+
+
+ input{
+  @apply border-[1px] border-gray-300 rounded-2xl p-[5px] focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-transparent;
+
+
+ }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.green-gradient-alt{
+  background: linear-gradient(90deg, #00c87b, #00ca83);
+}
+
+.green-gradient{
+  background: linear-gradient(90deg, #00684068,#00c87b, #00ffa6);
+  
+}
+
+.semi-circle-bottom {
+  clip-path: ellipse(60% 100% at 50% 0%);
+
+}
+
+
+
+.nav-items{
+  padding: 5px 10px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 300ms ease-in-out;
+}
+
+.nav-items:hover{
+  background-color: rgb(205, 205, 205);
+  color: #000;
+
+}
+
+.banner-background{
+  background: linear-gradient(rgb(0,0,0,0.3), rgb(0,0,0,0.3), rgb(0,0,0,0.3)), url("/images/adam-vradenburg-_gu7E90QChU-unsplash.jpg");
+  background-repeat: no-repeat;
+  background-position: cover;
+}
+
+
+.center{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+fieldset {
+  border: none;
+  border-top: 1px solid #ccc;
+}
+
+legend {
+  padding: 0 10px;
+}
+
+.black-overlay{
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+}
