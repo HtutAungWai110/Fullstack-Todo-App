@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest } from "next/server";
+import { jwtVerify } from "jose";
 
 const PUBLIC_PATHS = ['/', '/login', '/signup'];
 const AUTH_PATHS = ['/dashboard', '/profile'];
 
-export default function middleware(req: NextRequest){
+export default async function middleware(req: NextRequest){
     const {pathname} = req.nextUrl;
 
     const token = req.cookies.get('token')?.value;
@@ -19,6 +20,8 @@ export default function middleware(req: NextRequest){
     if(token && isPublicPath){
         return NextResponse.redirect(new URL('/dashboard', req.url));
     }
+    
+    
 }
 
 export const config = {

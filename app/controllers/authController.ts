@@ -2,7 +2,7 @@ import z from "zod";
 import hashPassword from "../lib/hashPassword";
 import bcrypt from "bcryptjs";
 
-import { prisma } from "../lib/db";
+import { prisma } from "../lib/db"
 
 const newUserSchema = z.object({
     username: z.string().min(4),

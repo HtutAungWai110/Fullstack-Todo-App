@@ -9,7 +9,7 @@ export default async function getUser() {
 
   try{
     return jwt.verify(token, process.env.JWT_SECRET as string);
-  } catch{
-    return null;
+  } catch(e){
+    return {message: (e as Error).message};
   }
 }
