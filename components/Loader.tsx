@@ -3,3 +3,7 @@ import { LoadingIndicator } from "@/components/application/loading-indicator/loa
 export const DotCircleWithLabelDemo = ({label} : {label: string}) => {
     return <LoadingIndicator type="dot-circle" size="md" label={label} />;
 };
+
+export const ThreeDotsLoader = ({label} : {label: string}) => {
+    return <LoadingIndicator type="dot-circle" size="md" label={label} />;
+};

@@ -7,7 +7,7 @@ import ErrorMessage from "./errorMessage";
 import SuccessfulMsg from "./successfulMessage";
 import { useRouter } from "next/navigation";
 
-import { DotCircleWithLabelDemo } from "./dotcircleLoader";
+import { DotCircleWithLabelDemo } from "./Loader";
 
 type Inputs = {
     username: string

@@ -33,5 +33,5 @@ export const getLists = async (id: string) => {
         where: {creator: id}
     })
 
-    return {lists};
+    return lists;
 }

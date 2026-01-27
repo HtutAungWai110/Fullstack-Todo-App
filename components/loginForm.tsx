@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useState } from "react";
-import { DotCircleWithLabelDemo } from "./dotcircleLoader";
+import { DotCircleWithLabelDemo } from "./Loader";
 import { useRouter } from "next/navigation";
 
 type Inputs = {

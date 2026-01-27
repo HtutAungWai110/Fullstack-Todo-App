@@ -1,19 +1,32 @@
 'use client'
 import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function NewlistInput() {
     const [input, setInput] = useState("");
+    const queryClient = useQueryClient();
 
-    const handleAdd = async () => {
-        const res = await fetch('api/todos', {
+    const mutation  = useMutation({
+        mutationFn: async () => {
+            const res = await fetch('/api/list', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json' 
             },
             body: JSON.stringify({input})
-        })
-        const data = await res.json();
-        console.log(data);
+            })
+            const data = await res.json();
+            console.log(data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["list"] })
+        }
+    })
+
+    const handleAdd = () => {
+        if(input.trim() == "") return;
+        mutation.mutate();
+        setInput("");
     }
 
     return (
