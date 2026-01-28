@@ -4,15 +4,11 @@ import { useEffect } from "react";
 import { QueryList } from "../lib/queryList"
 import { ThreeDotsLoader } from "@/components/Loader";
 
+import ListCard from "./listCard";
 
-type ListItem = {
-    id: string,
-    title: string,
-    creator: string,
-    createdAt: string
-}
+import { ListItemType } from "../lib/types";
 
-export default function Todos({ initData, userId }: { initData: ListItem[]; userId: string }){
+export default function Todos({ initData, userId }: { initData: ListItemType[]; userId: string }){
    
     const {data, isLoading, isPending, error} = QueryList({ initData, userId });
 
@@ -22,16 +18,22 @@ export default function Todos({ initData, userId }: { initData: ListItem[]; user
 
     
 
-    // if (isLoading || isPending){
-    //     return(
-    //         <div className="w-full h-[100vh] fixed top-0 flex justify-center items-center">
-    //             <ThreeDotsLoader label={""}/>
-    //         </div>
-    //     )
-    // }
+    if (isLoading || isPending){
+        return(
+            <div className="w-full h-[100vh] fixed top-0 flex justify-center items-center">
+                <ThreeDotsLoader label={""}/>
+            </div>
+        )
+    }
     return(
         <>
-            {(data ?? []).map((list) => <p key={list.id}>{list.title}</p>)}
+        <section>
+            <div className="flex justify-center gap-5 flex-wrap p-5">
+                {(data ?? []).map((list) => <ListCard key={list.id} list={list}/>)}
+            </div>
+        </section>
+            
+            
             
         </>
         

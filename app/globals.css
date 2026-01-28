@@ -118,3 +118,14 @@ legend {
   height: 100vh;
   width: 100%;
 }
+
+.list-hover{
+  transition: all ease 500ms;
+  opacity: 90%;
+  transform: scale(1);
+}
+
+.list-hover:hover{
+  opacity: 100%;
+  transform: scale(1.05);
+}

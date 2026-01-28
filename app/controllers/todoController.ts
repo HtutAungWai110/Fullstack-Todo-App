@@ -20,7 +20,7 @@ export const createNewList = async (id: string, input: string) => {
     const newList = await prisma.list.create({
         data: {
             title: input,
-            creator: id,   
+            creator: id
         }
     })
 
