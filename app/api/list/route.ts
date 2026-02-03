@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import getUser from "@/app/lib/getUserInfo";
-import { createNewList } from "@/app/controllers/todoController";
+import { createNewList } from "@/app/controllers/listController";
 export async function POST(req: NextRequest){
  
   const {input} = await req.json();

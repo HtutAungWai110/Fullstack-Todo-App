@@ -27,11 +27,25 @@ export const createNewList = async (id: string, input: string) => {
     return {newList}
 }
 
-export const getLists = async (id: string) => {
+export const getLists = async (userId: string) => {
 
     const lists = await prisma.list.findMany({
-        where: {creator: id}
+        where: {creator: userId}
     })
 
     return lists;
+}
+
+export const renameList = async (userId: string, listId: string, rename: string) => {
+    const list = await prisma.list.update({
+        where: {id: listId, creator: userId},
+        data: {
+            title: rename
+        }
+    })
+
+    if(!list) throw new Error("LIST NOT FOUND!")
+
+    return {...list, rename};
+    
 }

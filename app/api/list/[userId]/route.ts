@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getLists } from "@/app/controllers/todoController";
+import { getLists } from "@/app/controllers/listController";
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { userId: string } }
 ) {
-  const {id} = await params;
+  const {userId} = await params;
   try {
-    const lists = await getLists(id);
+    const lists = await getLists(userId);
     return NextResponse.json({
       message: "success",
       lists,

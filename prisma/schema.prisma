@@ -8,19 +8,32 @@ datasource db {
 }
 
 model List {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   title     String
   creator   String
-  createdAt DateTime @default(now())
-  User      User     @relation(fields: [creator], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  User      User       @relation(fields: [creator], references: [id], onDelete: Cascade)
+  TodoItem  TodoItem[]
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String     @id @default(uuid())
+  email     String     @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
   username  String
   List      List[]
+  TodoItem  TodoItem[]
+}
+
+model TodoItem {
+  id          String   @id @default(uuid())
+  title       String
+  creator     String
+  listId      String
+  createdAt   DateTime @default(now())
+  lastUpdated DateTime @default(now())
+  User        User     @relation(fields: [creator], references: [id], onDelete: Cascade)
+  List        List     @relation(fields: [listId], references: [id], onDelete: Cascade)
 }

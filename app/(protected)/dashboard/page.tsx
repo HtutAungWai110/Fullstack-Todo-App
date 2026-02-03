@@ -15,13 +15,16 @@ export default async function Dashboard () {
         );
     }
     const { id } = user as { id: string };
-    const data = await fetch(`${process.env.HOST_URL}/api/list/${id}`).then(res => res.json());
+    const url = `${process.env.HOST_URL}/api/list/${id}`
+    const data = await fetch(url).then(res => res.json());
     const {lists} = data;
     console.log(data);
     return(
         <main>
-        <p>Dashboard</p>
-        <Todos initData={lists} userId={id}/>
+            <section className="overflow-y-scroll max-h-[80vh]">
+                <Todos initData={lists} userId={id}/>
+            </section>
+        
         <NewlistInput/>
 
         </main>
