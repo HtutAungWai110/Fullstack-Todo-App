@@ -27,15 +27,13 @@ export default function Todos({ initData, userId }: { initData: ListItemType[]; 
     }
     return(
         <>
-        <section>
-            <div className="flex justify-center gap-5 flex-wrap p-5">
+            <div className="flex justify-center gap-5 flex-wrap p-5 mb-15">
                 {(data ?? []).sort((a, b) => {
                     const oldest = new Date(a.createdAt).getTime()
                     const latest = new Date(b.createdAt).getTime()
                     return oldest - latest
                 }).map((list) => <ListCard key={list.id} list={list} userId={userId}/>)}
             </div>
-        </section>
             
             
             

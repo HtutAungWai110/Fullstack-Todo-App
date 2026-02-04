@@ -21,7 +21,7 @@ export default async function Dashboard () {
     console.log(data);
     return(
         <main>
-            <section className="overflow-y-scroll max-h-[80vh]">
+            <section>
                 <Todos initData={lists} userId={id}/>
             </section>
         

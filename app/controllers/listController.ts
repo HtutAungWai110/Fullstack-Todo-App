@@ -46,6 +46,17 @@ export const renameList = async (userId: string, listId: string, rename: string)
 
     if(!list) throw new Error("LIST NOT FOUND!")
 
-    return {...list, rename};
+    return list;
     
+}
+
+export const deleteList = async (userId: string, listId:string) => {
+    const list = await prisma.list.delete({
+        where: {id: listId, creator: userId}
+    })
+
+    if(!list) throw new Error("LIST NOT FOUND!")
+    
+    return list
+
 }
