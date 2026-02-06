@@ -18,13 +18,12 @@ export async function POST(req: NextRequest){
     return NextResponse.json({
       message: "success",
       data: newList,
-      status: 200
-    })
+      
+    }, {status: 200})
   } catch (e) {
     return NextResponse.json({
       message: (e as Error).message,
-      status: 400
-    }) 
+    }, {status: 400}) 
   }
   
 }

@@ -1,4 +1,4 @@
-import NewlistInput from "@/components/addNewList"
+
 import getUser from "@/app/lib/getUserInfo";
 import Todos from "@/app/client/todos"
 
@@ -25,7 +25,6 @@ export default async function Dashboard () {
                 <Todos initData={lists} userId={id}/>
             </section>
         
-        <NewlistInput/>
 
         </main>
     )

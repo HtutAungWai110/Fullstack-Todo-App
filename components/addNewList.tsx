@@ -2,12 +2,18 @@
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export default function NewlistInput() {
+type Props = {
+    setLoad: (value: boolean | ((prev: boolean) => boolean)) => void;
+    onAddError: (message: string) => void
+}
+
+export default function NewlistInput({setLoad, onAddError}: Props) {
     const [input, setInput] = useState("");
     const queryClient = useQueryClient();
 
     const mutation  = useMutation({
         mutationFn: async () => {
+            setLoad(true);
             const res = await fetch('/api/list', {
             method: 'POST',
             headers: {
@@ -15,11 +21,21 @@ export default function NewlistInput() {
             },
             body: JSON.stringify({input})
             })
+
+            if(!res.ok){
+                const error = await res.json();
+                throw new Error(error.message)
+            }
             const data = await res.json();
             console.log(data);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["list"] })
+            setLoad(false);
+        },
+        onError: (error: Error) => {
+            setLoad(false)
+            onAddError(error.message);
         }
     })
 

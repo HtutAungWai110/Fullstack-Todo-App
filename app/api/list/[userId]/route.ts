@@ -10,13 +10,11 @@ export async function GET(
     return NextResponse.json({
       message: "success",
       lists,
-      status: 200
-    })
+    }, {status: 200})
   } catch(e){
     return NextResponse.json({
-      message: (e as Error).message,
-      status: 200
-    })
+      message: (e as Error).message
+    }, {status: 400})
   }
 }
 

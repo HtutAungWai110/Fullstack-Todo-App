@@ -19,8 +19,16 @@ function parseDate(isoString: string){
     ${date.getHours() % 12 || 12}:${String(date.getMinutes()).padStart(2,"0")} ${date.getHours() % 12 ? "PM": "AM"}`
 }
 
+type ListCardProps = {
+    list: ListItemType;
+    userId: string;
+    onRenameError: (message: string) => void;
+    onDeleteError: (message: string) => void;
+    setLoad: (value: boolean | ((prev: boolean) => boolean)) => void
+}
 
-export default function ListCard({list, userId} : {list: ListItemType, userId: string}) {
+
+export default function ListCard({list, userId, onRenameError, onDeleteError, setLoad} : ListCardProps) {
 
     const [isEditing, setEditing] = useState<boolean>(false);
     const [isRenaming, setRenaming] = useState<boolean>(false);
@@ -60,6 +68,7 @@ export default function ListCard({list, userId} : {list: ListItemType, userId: s
 
     const renameMutation = useMutation({
         mutationFn: async () => {
+            setLoad(true);
             const res = await fetch(`api/list/${userId}/${list.id}`, {
                 method: 'PUT',
                 headers: {
@@ -67,29 +76,48 @@ export default function ListCard({list, userId} : {list: ListItemType, userId: s
                 },
                 body: JSON.stringify({rename})
             })
+
+            if(!res.ok){
+                const err = await res.json();
+                throw new Error(err.message);
+            }
             const data = await res.json();
             console.log(data);
         },
         onSuccess: () => {
             setRenaming(false);
             queryClient.invalidateQueries({queryKey: ["list"]})
+            setLoad(false);
+        },
+        onError: (error: Error) => {
+            onRenameError(error.message);
         }
     })
 
     const deleteMutation = useMutation({
         mutationFn: async () => {
+            setLoad(true);
             const res = await fetch(`api/list/${userId}/${list.id}`, {
                 method: 'DELETE',
                 headers: {
                 'Content-Type': 'application/json' 
                 },
             })
-
+            if(!res.ok){
+                const err = await res.json();
+                throw new Error(err.message);
+            }
             const data = await res.json();
             console.log(data);
+            
         },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["list"]})
+            setLoad(false);
+        },
+        onError: (error: Error) => {
+            onDeleteError(error.message)
+            setLoad(false);
         }
     })
 
@@ -111,6 +139,7 @@ export default function ListCard({list, userId} : {list: ListItemType, userId: s
     }
 
     function handleDelete(){
+        
         deleteMutation.mutate();
     }
 
