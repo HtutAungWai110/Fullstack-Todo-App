@@ -22,13 +22,12 @@ function parseDate(isoString: string){
 type ListCardProps = {
     list: ListItemType;
     userId: string;
-    onRenameError: (message: string) => void;
-    onDeleteError: (message: string) => void;
-    setLoad: (value: boolean | ((prev: boolean) => boolean)) => void
+    setLoad: (value: boolean | ((prev: boolean) => boolean)) => void;
+    onError: (value: string | null) => void
 }
 
 
-export default function ListCard({list, userId, onRenameError, onDeleteError, setLoad} : ListCardProps) {
+export default function ListCard({list, userId, onError, setLoad} : ListCardProps) {
 
     const [isEditing, setEditing] = useState<boolean>(false);
     const [isRenaming, setRenaming] = useState<boolean>(false);
@@ -90,7 +89,7 @@ export default function ListCard({list, userId, onRenameError, onDeleteError, se
             setLoad(false);
         },
         onError: (error: Error) => {
-            onRenameError(error.message);
+            onError(error.message);
         }
     })
 
@@ -116,7 +115,7 @@ export default function ListCard({list, userId, onRenameError, onDeleteError, se
             setLoad(false);
         },
         onError: (error: Error) => {
-            onDeleteError(error.message)
+            onError(error.message)
             setLoad(false);
         }
     })
@@ -129,6 +128,7 @@ export default function ListCard({list, userId, onRenameError, onDeleteError, se
             setRenaming(false); 
             return;
         }
+        if (rename.trim() == "") return;
         renameMutation.mutate();
     }
 

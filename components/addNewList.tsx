@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type Props = {
     setLoad: (value: boolean | ((prev: boolean) => boolean)) => void;
-    onAddError: (message: string) => void
+    onAddError: (value: string | null) => void;
 }
 
 export default function NewlistInput({setLoad, onAddError}: Props) {

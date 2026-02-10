@@ -11,6 +11,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
+    "@reduxjs/toolkit": "^2.11.2",
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-query-devtools": "^5.91.2",
     "bcryptjs": "^3.0.3",
@@ -23,6 +24,7 @@
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.0",
     "react-icons": "^5.5.0",
+    "react-redux": "^9.2.0",
     "slugify": "^1.6.6",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.5"

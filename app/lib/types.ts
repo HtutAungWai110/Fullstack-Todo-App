@@ -5,3 +5,12 @@ export type ListItemType = {
     createdAt: string,
     slug: string
 }
+
+export interface TodoState {
+    id      :string,   
+    title   :string,
+    creator :string,
+    listId  :string,
+    createdAt   : Date, 
+    lastUpdated : Date, 
+}

@@ -1,6 +1,6 @@
 
 import getUser from "@/app/lib/getUserInfo";
-import Todos from "@/app/client/todos"
+import Lists from "@/app/client/lists"
 
 
 
@@ -22,7 +22,7 @@ export default async function Dashboard () {
     return(
         <main>
             <section>
-                <Todos initData={lists} userId={id}/>
+                <Lists initData={lists} userId={id}/>
             </section>
         
 
