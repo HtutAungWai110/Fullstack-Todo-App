@@ -6,9 +6,10 @@ export default async function ListPage({params}: {params: Promise<{ listId: stri
 
     const todos = await fetch(`${process.env.HOST_URL}/api/todo/${listId}`).then(res => res.json());
     return(
-        <>
-            <h1>ListPage</h1>
+        <main>
+            <section className="mt-5">
             <Todos initialState={todos.data} listId={listId}/>
-        </>
+            </section>
+        </main>
     )
 }

@@ -13,4 +13,7 @@ export interface TodoState {
     listId  :string,
     createdAt   : Date, 
     lastUpdated : Date, 
+    completed: boolean,
+    due: string,
+    important: boolean
 }

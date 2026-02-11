@@ -15,8 +15,7 @@ function getColorCode(id: string){
 
 function parseDate(isoString: string){
     const date = new Date(isoString);
-    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")} 
-    ${date.getHours() % 12 || 12}:${String(date.getMinutes()).padStart(2,"0")} ${date.getHours() % 12 ? "PM": "AM"}`
+    return date.toLocaleString();
 }
 
 type ListCardProps = {

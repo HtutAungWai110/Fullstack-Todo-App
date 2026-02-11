@@ -34,6 +34,9 @@ model TodoItem {
   listId      String
   createdAt   DateTime @default(now())
   lastUpdated DateTime @default(now())
+  completed   Boolean  @default(false)
+  due         DateTime @default(now())
+  important   Boolean  @default(false)
   User        User     @relation(fields: [creator], references: [id], onDelete: Cascade)
   List        List     @relation(fields: [listId], references: [id], onDelete: Cascade)
 }
