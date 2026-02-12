@@ -59,3 +59,49 @@ export const deleteTodo = async (payload: {
     
     return deletedTodo;
 }
+
+export const renameTodo = async (payload: {
+    id: string,
+    listId: string,
+    userId: string,
+    rename: string,
+}) => {
+    const {id, listId, userId, rename} = payload;
+    const todoExist = await prisma.todoItem.findFirst({
+        where: {
+            id: id,
+            listId: listId,
+            creator: userId
+        }
+    });
+    if(!todoExist) throw new Error("Todo not found!");
+
+    const renamed = await prisma.todoItem.update({
+        where: {id: id, listId: listId, creator: userId},
+        data: {title: rename, lastUpdated: new Date()}
+    })
+    return renamed;
+}
+
+export const updateDue = async (payload: {
+    id: string,
+    listId: string,
+    userId: string,
+    due: string
+}) => {
+    const {id, listId, userId, due} = payload;
+    const todoExist = await prisma.todoItem.findFirst({
+        where: {
+            id: id,
+            listId: listId,
+            creator: userId
+        }
+    });
+    if(!todoExist) throw new Error("Todo not found!");
+
+    const updatedDue = await prisma.todoItem.update({
+        where: {id: id, listId: listId, creator: userId},
+        data: {due: new Date(due), lastUpdated: new Date()}
+    })
+    return updatedDue;
+}
