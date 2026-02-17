@@ -1,28 +1,9 @@
 import { NextResponse, NextRequest } from "next/server"
 import getUser from "@/app/lib/getUserInfo";
-import { getTodos } from "@/app/controllers/todoController";
 import { createTodo } from "@/app/controllers/todoController";
 import { deleteTodo } from "@/app/controllers/todoController";
 
-export async function GET(
-  req: NextRequest,
-  {params} : {params: {listId: string}}
-) {
-    const {listId} = await params;
 
-    try {
-        const todos = await getTodos(listId);
-        return NextResponse.json({
-            message: "Success",
-            data: todos
-        }, {status: 200})
-
-    }catch(e){
-        return NextResponse.json({
-            message: (e as Error).message
-        })
-    }
-}
 
 export async function POST(
   req: NextRequest,

@@ -38,10 +38,28 @@ const todoSlice = createSlice({
                 }
                 return todo;
             })
+        },
+        markDone: (state, action: PayloadAction<{id: string}>) => {
+            const {id} = action.payload;
+            return state.map(todo => {
+                if(todo.id == id){
+                    return {...todo, completed: !todo.completed}
+                }
+                return todo;
+            })
+        },
+        markImportant: (state, action: PayloadAction<{id: string}>) => {
+            const {id} = action.payload;
+            return state.map(todo => {
+                if (todo.id === id){
+                    return {...todo, important: !todo.important}
+                }
+                return todo;
+            })
         }
     }
 })
 
-export const {setTodos, addTodo, deleteTodo, renameTodo, dueTodo} = todoSlice.actions;
+export const {setTodos, addTodo, deleteTodo, renameTodo, dueTodo, markDone, markImportant} = todoSlice.actions;
 
 export default todoSlice.reducer;

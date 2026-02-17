@@ -38,7 +38,7 @@ export default function LoginForm(){
             }
 
             const user = await res.json();
-            router.push('/dashboard');
+            router.push("/");
         } catch (e) {
             if(!navigator.onLine){
                 throw new Error("No internet connection");

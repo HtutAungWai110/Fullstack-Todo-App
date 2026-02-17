@@ -3,7 +3,7 @@ import { FaRegStar } from "react-icons/fa6";
 import { FaStar } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { deleteTodo, renameTodo, dueTodo } from "@/app/state/todoSlice";
+import { deleteTodo, renameTodo, dueTodo, markDone, markImportant } from "@/app/state/todoSlice";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { FaCheck } from "react-icons/fa";
@@ -11,6 +11,11 @@ import { FaCheck } from "react-icons/fa";
 export default function TodoCard({todo, listId} : {todo: TodoState, listId: string}){
     const dispatch = useDispatch();
     const [todoState, setTodoState] = useState<TodoState>(todo);
+
+    useEffect(() => {
+        setTodoState(todo)
+    }, [todo])
+
     const deleteMutation = useMutation({
         mutationFn: async () => {
             const res = await fetch(`/api/todo/${listId}`, {
@@ -21,7 +26,6 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
                 body: JSON.stringify({id: todo.id})  
             })
             const data = await res.json();
-            console.log(data)
             return data.data;
         },
         onSuccess: (data) => {
@@ -30,7 +34,7 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
     });
 
 
-    const updateMutation = useMutation({
+    const renameMutation = useMutation({
         mutationFn: async () => {
             dispatch(renameTodo({id: todo.id, newTitle: todoState.title}));
             const res = await fetch(`/api/todo/${listId}/rename`, {
@@ -41,16 +45,17 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
                 body: JSON.stringify({id: todo.id, rename: todoState.title, oldname: todo.title})
             })
             if(!res.ok) {
-                const error = await res.json();
-                throw new Error(error.title);
+                const data = await res.json();
+                throw new Error(JSON.stringify(data));
             }
 
             const data = await res.json();
             return data;
         },
         onError: (error) => {
-            dispatch(renameTodo({id: todo.id, newTitle: error.message}));
-            setTodoState(prev => ({...prev, title: error.message}));
+            const {message, title} = JSON.parse(error.message) as {message: string, title: string};
+            dispatch(renameTodo({id: todo.id, newTitle: title}));
+            console.log(message);
         }
     })
 
@@ -70,7 +75,6 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
     const handleDueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if(e.target.value.trim() == "") return;
         setTodoState(prev => ({...prev, due: e.target.value}));
-        console.log(e.target.value);
     }
 
     const getLocalTime = () => {
@@ -93,8 +97,8 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
                 body: JSON.stringify({id: todo.id, due: todoState.due, oldDue: todo.due})
             })
             if(!res.ok) {
-                const error = await res.json();
-                throw new Error(error.due);
+                const data = await res.json();
+                throw new Error(JSON.stringify(data));
             }
             const data = await res.json();
             return data;
@@ -102,8 +106,64 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
             console.log(data);
         },
         onError: (error) => {
-            dispatch(dueTodo({id: todo.id, newDue: error.message}));
-            setTodoState(prev => ({...prev, due: error.message}));
+            const {message, due} = JSON.parse(error.message) as {message: string, due: string}
+            dispatch(dueTodo({id: todo.id, newDue: due}));
+            console.log(message);
+        }
+    })
+
+    const markMutation = useMutation({
+        mutationFn: async () => {
+            dispatch(markDone({id: todo.id}))
+            const res = await fetch(`/api/todo/${listId}/mark`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({id: todo.id, mark: !todo.completed})
+            })
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.message);
+            }
+
+            const data = await res.json();
+            return data;
+        },
+        onSuccess: (data) => {
+            console.log(data)
+        },
+        onError: (e) => {
+            console.error(e.message)
+            dispatch(markDone({id: todo.id}))
+        }
+    })
+
+    const importantMutation = useMutation({
+        mutationFn: async () => {
+            dispatch(markImportant({id: todo.id}))
+            const res = await fetch(`/api/todo/${listId}/important`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type' : 'application/json'
+                }, 
+                body: JSON.stringify({id: todo.id, important: !todo.important})
+            })
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.message);
+            }
+
+            const data = await res.json();
+            return data
+        }, 
+        onSuccess: (data) => {
+            console.log(data)
+        },
+        onError: (e) => {
+            console.log(e.message);
+            dispatch(markImportant({id: todo.id}))
         }
     })
 
@@ -112,13 +172,25 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
     }
 
     const updatename = () => {
-        updateMutation.mutate();
+        renameMutation.mutate();
+    }
+
+    const handleMark = () => {
+        markMutation.mutate();
+    }
+
+    const handleImportant = () => {
+        importantMutation.mutate();
     }
 
     return (
         <div className="border p-4 rounded-4xl shadow-md md:m-5 m-2 flex items-center justify-between">
             <div className="flex gap-2">
-                <input type="text" className="rounded-2xl border-none" value={todoState.title} onChange={handleTitleChange}/>
+                <input type="checkbox" checked={todoState.completed} onChange={handleMark}/>
+                <input
+                style={{textDecoration: `${todo.completed ? "line-through" : "none"}`}}
+                type="text" className="rounded-2xl border-none" 
+                value={todoState.title} onChange={handleTitleChange}/>
                 {todoState.title.trim() !== todo.title.trim() && 
                     <button onClick={updatename}><FaCheck/></button>
                 }
@@ -126,7 +198,7 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
             
             <div className="flex items-center gap-2">
                 <input type="datetime-local"  onChange={handleDueChange} value={getLocalTime()} onBlur={updateDue}/>
-                <button>{todo.important ? <FaStar/> : <FaRegStar/>}</button>
+                <button onClick={handleImportant}>{todo.important ? <FaStar/> : <FaRegStar/>}</button>
                 <button onClick={handleDelete} className="text-red-500 active:scale-3d"><FaTrash/></button>
             </div>
         </div>

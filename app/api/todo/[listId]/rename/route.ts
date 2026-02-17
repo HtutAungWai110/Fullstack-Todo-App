@@ -18,6 +18,7 @@ export async function PUT(
         }, {status: 200})
     } catch(e){
         return NextResponse.json({
+            message: `Failed to rename ${oldname} to ${rename}`,
             title: oldname
         }, {status: 500})
     }

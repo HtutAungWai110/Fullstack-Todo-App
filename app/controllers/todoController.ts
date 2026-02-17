@@ -1,11 +1,21 @@
 import { prisma } from "../lib/db";
+import z from "zod";
 
-export const getTodos = async (listId : string) =>{
-    const todos = await prisma.todoItem.findMany({
-        where : {listId: listId}
+
+export const getTodos = async (listId : string, userId: string) =>{
+
+    const listExist = await prisma.list.findUnique({
+        where: {id: listId, creator: userId}
     })
 
-    if (!todos) throw new Error("Todos not found!");
+
+    if (!listExist) throw new Error("Not found!");
+
+    const todos = await prisma.todoItem.findMany({
+        where : {listId: listId, creator: userId}
+    })
+
+    if (!todos) throw new Error("Not found!");
 
     return todos;
 }
@@ -16,6 +26,17 @@ export const createTodo = async (payload: {
     title: string,
     due: string
 }) => {
+
+    const todoSchema = z.object({
+        userId: z.string(),
+        listId: z.string(),
+        title: z.string(),
+        due: z.string()
+    })
+    const result = todoSchema.safeParse(payload);
+    if(!result.success){
+        throw new Error("Validation Error")
+    }
     const {userId, listId, title, due} = payload;
     const listExist = await prisma.list.findUnique({
         where: {id: listId, creator: userId}
@@ -104,4 +125,59 @@ export const updateDue = async (payload: {
         data: {due: new Date(due), lastUpdated: new Date()}
     })
     return updatedDue;
+}
+
+export const markDone = async (payload: {
+    id: string,
+    listId: string,
+    userId: string,
+    mark: boolean
+}) => {
+    const {id, listId, userId, mark} = payload;
+    const todoExist = await prisma.todoItem.findFirst({
+        where: {
+            id: id,
+            listId: listId,
+            creator: userId
+        }
+    });
+    if(!todoExist) throw new Error("Todo not found!");
+
+    const todo = await prisma.todoItem.update({
+        where: {id: id, listId: listId, creator: userId},
+        data: {
+            completed: mark,
+            lastUpdated: new Date()
+        }
+    })
+
+    return todo;
+
+}
+
+export const markImportant = async (payload: {
+    id: string,
+    listId: string,
+    userId: string,
+    important: boolean
+}) => {
+    const {id, listId, userId, important} = payload;
+    const todoExist = await prisma.todoItem.findFirst({
+        where: {
+            id: id,
+            listId: listId,
+            creator: userId
+        }
+    });
+    if(!todoExist) throw new Error("Todo not found!");
+
+    const todo = await prisma.todoItem.update({
+        where: {id: id, listId: listId, creator: userId},
+        data: {
+            important: important,
+            lastUpdated: new Date()
+        }
+    })
+
+    return todo;
 }

@@ -16,12 +16,6 @@ export default function Todos({initialState, listId}: {initialState: TodoState[]
         dispatch(setTodos(initialState))
     }, [dispatch, initialState])
 
-    useEffect(() => {
-        todos.forEach(todo => {
-            console.log({...todo, due: new Date(todo.due)})
-        })
-    }, [todos])
-
     return (
         <>
         <TodoAdder listId={listId}/>
