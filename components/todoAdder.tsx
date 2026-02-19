@@ -2,14 +2,17 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addTodo } from "@/app/state/todoSlice";
+import { ThreeDotsLoaderSmall } from "./Loader";
 
 export default function TodoAdder({listId}: {listId: string}){
     const [title, setTitle] = useState<string>("");
     const [due, setDue] = useState<string>("");
+    const [adding, setAdding] = useState<boolean>(false);
     const dispatch = useDispatch();
 
     const addMutation = useMutation({
         mutationFn: async () => {
+            setAdding(true);
             const res = await fetch(`/api/todo/${listId}`, {
                 method: "POST",
                 headers: {
@@ -25,6 +28,10 @@ export default function TodoAdder({listId}: {listId: string}){
             setTitle("");
             setDue("");
             dispatch(addTodo(data))
+            setAdding(false)
+        }, 
+        onError: (e) => {
+            setAdding(false);
         }
     })
 
@@ -40,7 +47,7 @@ export default function TodoAdder({listId}: {listId: string}){
                 <input type="text" placeholder="Todo name" value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-none border-none outline-none w-[70%]"/>
                 <input value={due} onChange={(e) => setDue(e.target.value)} type="datetime-local"  className="rounded-none border-none outline-none w-[30%]"/>
             </div>
-                <button className="w-[10%] bg-foreground text-background h-full" onClick={handleAdd}>+</button>
+                <button className="w-[10%] bg-foreground text-background h-full" onClick={handleAdd}>{adding ? <ThreeDotsLoaderSmall label=""/> : "+"}</button>
             </div>
         </>
     )

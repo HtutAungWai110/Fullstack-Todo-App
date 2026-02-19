@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-import { jwtVerify } from "jose";
 
 const PUBLIC_PATHS = ['/', '/login', '/signup'];
 const AUTH_PATHS = ['/dashboard', '/profile'];

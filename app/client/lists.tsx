@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { QueryList } from "../lib/queryList"
 import { ThreeDotsLoader } from "@/components/Loader";
 import NewlistInput from "@/components/addNewList";
@@ -16,12 +16,20 @@ export default function Lists({ initData, userId }: { initData: ListItemType[]; 
 
     const [loader, setLoader] = useState<boolean>(false);
 
-    useEffect(() => {
-        console.log(data);
-    }, [data])
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
-        console.log(isError)
+        timeoutRef.current = setTimeout(() => {
+            setError(null);
+        }, 2000)
+
+
+        return () => {
+            if (timeoutRef.current){
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    
     }, [isError])
 
 
@@ -35,6 +43,16 @@ export default function Lists({ initData, userId }: { initData: ListItemType[]; 
             </div>
         )
     }
+
+    if (error){
+        return (
+            <div className="fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
+                <p>{error.message}</p>
+            </div>
+        )
+    }
+
+
     return(
         <>
             {loader && 
@@ -49,6 +67,12 @@ export default function Lists({ initData, userId }: { initData: ListItemType[]; 
                     return oldest - latest
                 }).map((list) => <ListCard key={list.id} list={list} userId={userId} onError={setError}  setLoad={setLoader}/>)}
             </div>
+
+            {isError && 
+                <div className="fixed bottom-20 left-[50%] -translate-x-[50%]">
+                    <p className="p-2 border rounded-2xl">{isError}</p>
+                </div>
+            }
             
             <NewlistInput setLoad={setLoader} onAddError={setError}/>
             

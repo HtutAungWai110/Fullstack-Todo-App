@@ -7,17 +7,26 @@ import { deleteTodo, renameTodo, dueTodo, markDone, markImportant } from "@/app/
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { FaCheck } from "react-icons/fa";
+import { ThreeDotsLoaderSmall } from "@/components/Loader";
 
-export default function TodoCard({todo, listId} : {todo: TodoState, listId: string}){
+export default function TodoCard({todo, listId, setError} : {
+    todo: TodoState, 
+    listId: string,
+    setError: (value: string | null) => void
+}){
     const dispatch = useDispatch();
     const [todoState, setTodoState] = useState<TodoState>(todo);
+    const [removing, setRemoving] = useState<boolean>(false);
 
     useEffect(() => {
         setTodoState(todo)
     }, [todo])
 
+    
+
     const deleteMutation = useMutation({
         mutationFn: async () => {
+            setRemoving(true);
             const res = await fetch(`/api/todo/${listId}`, {
                 method: "DELETE",
                 headers: {
@@ -30,6 +39,11 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
         },
         onSuccess: (data) => {
             dispatch(deleteTodo(data.id));
+            setRemoving(false);
+        },
+        onError: (error) => {
+            setError(error.message);
+            setRemoving(false);
         }
     });
 
@@ -55,17 +69,11 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
         onError: (error) => {
             const {message, title} = JSON.parse(error.message) as {message: string, title: string};
             dispatch(renameTodo({id: todo.id, newTitle: title}));
-            console.log(message);
+            setError(message);
         }
     })
 
-    const handleDelete = () => {
-        deleteMutation.mutate();
-    }
-
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTodoState(prev => ({...prev, title: e.target.value}));
-    }
+    
 
     useEffect(() => {
         console.log(todoState.title, todo.title)
@@ -108,7 +116,7 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
         onError: (error) => {
             const {message, due} = JSON.parse(error.message) as {message: string, due: string}
             dispatch(dueTodo({id: todo.id, newDue: due}));
-            console.log(message);
+            setError(message);
         }
     })
 
@@ -135,8 +143,8 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
             console.log(data)
         },
         onError: (e) => {
-            console.error(e.message)
             dispatch(markDone({id: todo.id}))
+            setError(e.message)
         }
     })
 
@@ -162,24 +170,37 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
             console.log(data)
         },
         onError: (e) => {
-            console.log(e.message);
+            setError(e.message);
             dispatch(markImportant({id: todo.id}))
         }
     })
 
+    const handleDelete = () => {
+        deleteMutation.mutate();
+    }
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if(removing) return;
+        setTodoState(prev => ({...prev, title: e.target.value}));
+    }
+
     const updateDue = () => {
+        if (removing) return;
         updateDueMutation.mutate();
     }
 
     const updatename = () => {
+        if (removing) return;
         renameMutation.mutate();
     }
 
     const handleMark = () => {
+        if (removing) return;
         markMutation.mutate();
     }
 
     const handleImportant = () => {
+        if (removing) return;
         importantMutation.mutate();
     }
 
@@ -199,8 +220,13 @@ export default function TodoCard({todo, listId} : {todo: TodoState, listId: stri
             <div className="flex items-center gap-2">
                 <input type="datetime-local"  onChange={handleDueChange} value={getLocalTime()} onBlur={updateDue}/>
                 <button onClick={handleImportant}>{todo.important ? <FaStar/> : <FaRegStar/>}</button>
-                <button onClick={handleDelete} className="text-red-500 active:scale-3d"><FaTrash/></button>
+                {!removing && <button onClick={handleDelete} className="text-red-500 active:scale-3d"><FaTrash/></button>}
+                {removing && 
+                <ThreeDotsLoaderSmall label=""/>
+                }
             </div>
+
+            
         </div>
     )
 }
