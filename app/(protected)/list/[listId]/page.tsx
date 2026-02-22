@@ -6,7 +6,7 @@ export default async function ListPage({params}: {params: Promise<{ listId: stri
     const {listId} = await params;
     const {id: userId} = await getUser() as {id: string};
 
-    const res = await fetch(`${process.env.HOST_URL}/api/todo/${listId}/${userId}`);
+    const res = await fetch(`${process.env.HOST_URL}/api/todo/${listId}/${userId}`, { cache: "no-store", next: {revalidate: 10} });
     if(!res.ok){
         notFound();
     }

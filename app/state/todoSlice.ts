@@ -7,13 +7,44 @@ import { updateDue } from "../controllers/todoController";
 
 const initialState: TodoState[] = [];
 
+const sort = (state: TodoState[], order: string) => {
+    switch(order){
+                case "newest":
+                    return [...state].sort((a, b) => {
+                        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                    })
+                case "oldest":
+                    return [...state].sort((a, b) => {
+                        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+                    })
+                case "a-z":
+                    return [...state].sort((a, b) => {
+                        return a.title.localeCompare(b.title);
+                    })
+                case "z-a":                    
+                    return [...state].sort((a, b) => {
+                        return b.title.localeCompare(a.title);
+                    })
+                case "important":
+                    return [...state].sort((a, b) => {
+                        return Number(b.important) - Number(a.important);
+                    })
+                case "due-soon": 
+                    return [...state].sort((a, b) => {
+                        return new Date(a.due).getTime() - new Date(b.due).getTime();
+                    })
+                default: 
+                    return state;
+                }
+}
+
 
 const todoSlice = createSlice({
     name: "todo",
     initialState,
     reducers: {
         setTodos: (state, action: PayloadAction<TodoState[]>) => {
-            return action.payload;
+            return sort(action.payload, "newest");
         },
         addTodo: (state, action: PayloadAction<TodoState>) => {
             return [...state, action.payload];
@@ -56,10 +87,16 @@ const todoSlice = createSlice({
                 }
                 return todo;
             })
+        },
+        setSortedTodos: (state, action: PayloadAction<{order: string}>) => {
+            const {order} = action.payload;
+            return sort(state, order);
         }
     }
 })
 
-export const {setTodos, addTodo, deleteTodo, renameTodo, dueTodo, markDone, markImportant} = todoSlice.actions;
+
+
+export const {setTodos, addTodo, deleteTodo, renameTodo, dueTodo, markDone, markImportant, setSortedTodos} = todoSlice.actions;
 
 export default todoSlice.reducer;

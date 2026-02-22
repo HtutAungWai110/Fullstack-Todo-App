@@ -205,20 +205,20 @@ export default function TodoCard({todo, listId, setError} : {
     }
 
     return (
-        <div className="border p-4 rounded-4xl shadow-md md:m-5 m-2 flex items-center justify-between">
-            <div className="flex gap-2">
+        <div className="md:m-5 m-2 border p-4 rounded-4xl  shadow-md flex items-center justify-between">
+            <div className="flex gap-2 w-[30%] ">
                 <input type="checkbox" checked={todoState.completed} onChange={handleMark}/>
                 <input
                 style={{textDecoration: `${todo.completed ? "line-through" : "none"}`}}
-                type="text" className="rounded-2xl border-none" 
+                type="text" className="rounded-2xl border-none sm:text-[1em] text-[0.8em] w-[70%]"  
                 value={todoState.title} onChange={handleTitleChange}/>
                 {todoState.title.trim() !== todo.title.trim() && 
                     <button onClick={updatename}><FaCheck/></button>
                 }
             </div>
             
-            <div className="flex items-center gap-2">
-                <input type="datetime-local"  onChange={handleDueChange} value={getLocalTime()} onBlur={updateDue}/>
+            <div className="flex items-center gap-2 w-[0%7] justify-end">
+                <input type="datetime-local" className="sm:text-[1em] text-[0.7em]" onChange={handleDueChange} value={getLocalTime()} onBlur={updateDue}/>
                 <button onClick={handleImportant}>{todo.important ? <FaStar/> : <FaRegStar/>}</button>
                 {!removing && <button onClick={handleDelete} className="text-red-500 active:scale-3d"><FaTrash/></button>}
                 {removing && 

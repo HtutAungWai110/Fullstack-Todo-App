@@ -7,6 +7,7 @@ import { useEffect, useState, useRef } from "react";
 import { setTodos } from "../state/todoSlice";
 import TodoAdder from "@/components/todoAdder";
 import TodoCard from "./todoCard";
+import TodoSorter from "@/components/todoSorter";
 
 export default function Todos({initialState, listId}: {initialState: TodoState[], listId: string}){
     const todos = useSelector((state: RootState) => state.todo);
@@ -35,7 +36,10 @@ export default function Todos({initialState, listId}: {initialState: TodoState[]
     return (
         <>
         <TodoAdder listId={listId}/>
-        <div className="mt-5">
+        <div className="m-[5px_30px] flex justify-end">
+            <TodoSorter/>
+        </div>
+        <div>
             {todos.map((todo, index) => {
                 return <TodoCard key={index} todo={todo} listId={listId} setError={setError}/>
             })}
